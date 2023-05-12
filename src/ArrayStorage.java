@@ -18,8 +18,9 @@ public class ArrayStorage {
 
     Resume get(String uuid) {
         for (Resume resume : storage) {
-            if (resume != null && resume.uuid != null && resume.uuid.equals(uuid))
+            if (resume != null && resume.uuid != null && resume.uuid.equals(uuid)) {
                 return resume;
+            }
         }
         return null;
     }
@@ -44,8 +45,9 @@ public class ArrayStorage {
     int size() {
         int nonNullsCounter = 0;
         for (Resume resume : storage) {
-            if (resume != null)
+            if (resume != null) {
                 nonNullsCounter++;
+            }
         }
         return nonNullsCounter;
     }
