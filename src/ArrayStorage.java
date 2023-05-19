@@ -3,52 +3,43 @@ import java.util.Arrays;
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
 
+    private int size = 0;
+
     void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     void save(Resume resume) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                storage[i] = resume;
-                break;
-            }
-        }
+            storage[size] = resume;
+            size++;
     }
 
     Resume get(String uuid) {
-        for (Resume resume : storage) {
-            if (resume != null && resume.uuid != null && resume.uuid.equals(uuid)) {
-                return resume;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                return storage[i];
             }
         }
         return null;
     }
 
     void delete(String uuid) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] != null && storage[i].uuid != null && storage[i].uuid.equals(uuid)) {
-                storage[i] = null;
-                for (int j = i; j < storage.length - 1; j++) {
-                    storage[j] = storage[j+1];
-                    storage[j+1] = null;
-                }
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid.equals(uuid)) {
+                storage[i] = storage[size - 1];
+                storage[size - 1] = null;
+                size--;
                 break;
             }
         }
     }
 
     Resume[] getAll() {
-        return Arrays.copyOf(storage, this.size());
+        return Arrays.copyOf(storage, size);
     }
 
     int size() {
-        int nonNullsCounter = 0;
-        for (Resume resume : storage) {
-            if (resume != null) {
-                nonNullsCounter++;
-            }
-        }
-        return nonNullsCounter;
+        return size;
     }
 }
