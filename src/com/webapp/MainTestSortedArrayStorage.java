@@ -1,5 +1,7 @@
 package com.webapp;
 
+import com.webapp.exception.ExistStorageException;
+import com.webapp.exception.NotExistStorageException;
 import com.webapp.model.Resume;
 import com.webapp.storage.SortedArrayStorage;
 import com.webapp.storage.Storage;
@@ -10,15 +12,11 @@ import com.webapp.storage.Storage;
 public class MainTestSortedArrayStorage {
     static final Storage SORTED_ARRAY_STORAGE = new SortedArrayStorage();
 
-    public static void main(String[] args) {
-        Resume r1 = new Resume();
-        r1.setUuid("uuid0");
-        Resume r2 = new Resume();
-        r2.setUuid("uuid1");
-        Resume r3 = new Resume();
-        r3.setUuid("uuid2");
-        Resume r4 = new Resume();
-        r4.setUuid("uuid3");
+    public static void main(String[] args) throws NotExistStorageException, ExistStorageException {
+        Resume r1 = new Resume("uuid0");
+        Resume r2 = new Resume("uuid1");
+        Resume r3 = new Resume("uuid2");
+        Resume r4 = new Resume("uuid3");
 
         //save method test
         SORTED_ARRAY_STORAGE.save(r1);
@@ -38,8 +36,7 @@ public class MainTestSortedArrayStorage {
         System.out.println("Size: " + SORTED_ARRAY_STORAGE.size());
 
         //update method test
-        Resume testResume = new Resume();
-        testResume.setUuid("uuid1");
+        Resume testResume = new Resume("uuid1");
         SORTED_ARRAY_STORAGE.update(testResume);
         System.out.println("Get updated resume: " + SORTED_ARRAY_STORAGE.get(testResume.getUuid()));
 

@@ -1,5 +1,8 @@
 package com.webapp.storage;
 
+import com.webapp.exception.ExistStorageException;
+import com.webapp.exception.NotExistStorageException;
+import com.webapp.exception.StorageException;
 import com.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -12,7 +15,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void update(Resume r) {
         int index = getIndex(r.getUuid());
         if (index < 0) {
-            System.out.println("Resume " + r.getUuid() + " not exist");
+            throw new NotExistStorageException(r.getUuid());
         } else {
             storage[index] = r;
         }
@@ -23,22 +26,22 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void save(Resume resume) {
+    public final void save(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (size >= storage.length) {
-            System.out.println("The database is full");
+            throw new StorageException("Storage overflow", resume.getUuid());
         } else if (index >= 0) {
-            System.out.println("Resume already exists in the database");
+            throw new ExistStorageException(resume.getUuid());
         } else {
             saveByIndex(resume, index);
             size++;
         }
     }
 
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Resume does not exist in the database");
+            throw new NotExistStorageException(uuid);
         } else {
             deleteByIndex(index);
             storage[size - 1] = null;
@@ -46,11 +49,10 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index < 0) {
-            System.out.println("Resume with " + "\"" + uuid + "\" uuid" + " does not exist in the database");
-            return null;
+            throw new NotExistStorageException(uuid);
         } else {
             return storage[index];
         }

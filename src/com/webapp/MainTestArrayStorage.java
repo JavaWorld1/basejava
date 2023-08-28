@@ -1,5 +1,7 @@
 package com.webapp;
 
+import com.webapp.exception.ExistStorageException;
+import com.webapp.exception.NotExistStorageException;
 import com.webapp.model.Resume;
 import com.webapp.storage.ArrayStorage;
 import com.webapp.storage.Storage;
@@ -10,13 +12,10 @@ import com.webapp.storage.Storage;
 public class MainTestArrayStorage {
     static final Storage ARRAY_STORAGE = new ArrayStorage();
 
-    public static void main(String[] args) {
-        Resume r1 = new Resume();
-        r1.setUuid("uuid1");
-        Resume r2 = new Resume();
-        r2.setUuid("uuid2");
-        Resume r3 = new Resume();
-        r3.setUuid("uuid3");
+    public static void main(String[] args) throws ExistStorageException, NotExistStorageException {
+        Resume r1 = new Resume("uuid0");
+        Resume r2 = new Resume("uuid1");
+        Resume r3 = new Resume("uuid2");
 
         //save method test
         ARRAY_STORAGE.save(r1);
@@ -35,8 +34,7 @@ public class MainTestArrayStorage {
         System.out.println("Size: " + ARRAY_STORAGE.size());
 
         //update method test
-        Resume testResume = new Resume();
-        testResume.setUuid("uuid1");
+        Resume testResume = new Resume("uuid1");
         ARRAY_STORAGE.update(testResume);
         System.out.println("Get updated resume: " + ARRAY_STORAGE.get(testResume.getUuid()));
 
