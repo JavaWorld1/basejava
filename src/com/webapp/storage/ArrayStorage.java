@@ -4,7 +4,7 @@ import com.webapp.model.Resume;
 
 public class ArrayStorage extends AbstractArrayStorage {
     @Override
-    protected int getIndex(String uuid) {
+    protected Integer getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
@@ -14,12 +14,12 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteByIndex(int index) {
+    protected void deleteByIndex(Integer index) {
         storage[index] = storage[size - 1];
     }
 
     @Override
-    protected void saveByIndex(Resume resume, int index) {
+    protected void saveByIndex(Resume resume, Integer index) {
         storage[size] = resume;
     }
 }

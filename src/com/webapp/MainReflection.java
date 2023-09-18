@@ -1,4 +1,4 @@
-package com.webapp.storage;
+package com.webapp;
 
 import com.webapp.model.Resume;
 

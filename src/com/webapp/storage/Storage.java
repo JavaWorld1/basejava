@@ -1,6 +1,5 @@
 package com.webapp.storage;
 
-import com.webapp.exception.ExistStorageException;
 import com.webapp.exception.NotExistStorageException;
 import com.webapp.exception.StorageException;
 import com.webapp.model.Resume;

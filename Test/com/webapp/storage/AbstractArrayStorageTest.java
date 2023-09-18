@@ -12,12 +12,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class AbstractArrayStorageTest {
     private final Storage storage;
 
-    private final static Resume R_5 = new Resume();
+    private final static String UUID_1 = "uuid1";
+    private final static Resume RESUME_1 = new Resume(UUID_1);
+    private final static String UUID_2 = "uuid2";
+    private final static Resume RESUME_2 = new Resume(UUID_2);
+    private final static String UUID_3 = "uuid3";
+    private final static Resume RESUME_3 = new Resume(UUID_3);
+    private final static String UUID_4 = "uuid4";
+    private final static Resume RESUME_4 = new Resume(UUID_4);
 
-    private final Resume r1 = new Resume("uuid0");
-    private final Resume r2 = new Resume("uuid1");
-    private final Resume r3 = new Resume("uuid2");
-    private final Resume r4 = new Resume("uuid3");
+    private final static String UUID_5 = "uuid5";
+    private final static Resume OVERFLOW_RESUME = new Resume(UUID_5);
+
+
+    private final static String NOT_EXIST_UUID = "notExistUuid";
 
     public AbstractArrayStorageTest(Storage storage) {
         this.storage = storage;
@@ -26,21 +34,21 @@ class AbstractArrayStorageTest {
     @BeforeEach
     void setUp() {
         storage.clear();
-        storage.save(r1);
-        storage.save(r2);
-        storage.save(r3);
+        storage.save(RESUME_1);
+        storage.save(RESUME_2);
+        storage.save(RESUME_3);
     }
 
     @Test
     void update() {
-        Resume existResume = new Resume("uuid0");
+        Resume existResume = new Resume(UUID_1);
         storage.update(existResume);
-        assertSame(existResume, storage.get(r1.getUuid()));
+        assertSame(existResume, storage.get(RESUME_1.getUuid()));
     }
 
     @Test
     void updateNotExist() {
-        Resume notExistResume = new Resume("notExistUuid");
+        Resume notExistResume = new Resume(NOT_EXIST_UUID);
         assertThrows(NotExistStorageException.class, () -> storage.update(notExistResume));
     }
 
@@ -53,23 +61,24 @@ class AbstractArrayStorageTest {
 
     @Test
     void save() {
-        storage.save(r4);
+        storage.save(RESUME_4);
         assertSize(4);
-        assertGet(r4);
+        assertGet(RESUME_4);
     }
 
     @Test
     void saveExist() {
-        assertThrows(ExistStorageException.class, () -> storage.save(r1));
+        assertThrows(ExistStorageException.class, () -> storage.save(RESUME_1));
     }
 
     @Test
     void saveOverflow() {
-        for (int i = 3; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+        storage.clear();
+        for (int i = 0; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
             storage.save(new Resume());
         }
         try {
-            storage.save(R_5);
+            storage.save(OVERFLOW_RESUME);
         } catch (StorageException e) {
             fail(e.getMessage());
         }
@@ -77,33 +86,33 @@ class AbstractArrayStorageTest {
 
     @Test
     void delete() {
-        storage.delete(r1.getUuid());
+        storage.delete(RESUME_1.getUuid());
         assertSize(2);
-        assertThrows(NotExistStorageException.class, () -> storage.get(r1.getUuid()));
+        assertThrows(NotExistStorageException.class, () -> storage.get(RESUME_1.getUuid()));
     }
 
     @Test
     void deleteNotExist() {
-        assertThrows(NotExistStorageException.class, () -> storage.delete("notExistUuid"));
+        assertThrows(NotExistStorageException.class, () -> storage.delete(NOT_EXIST_UUID));
     }
 
     @Test
     void get() {
-        assertGet(r1);
-        assertGet(r2);
-        assertGet(r3);
+        assertGet(RESUME_1);
+        assertGet(RESUME_2);
+        assertGet(RESUME_3);
     }
 
     @Test
     void getNotExist() {
-        assertThrows(NotExistStorageException.class, () -> storage.get("notExistUuid"));
+        assertThrows(NotExistStorageException.class, () -> storage.get(NOT_EXIST_UUID));
     }
 
     @Test
     void getAll() {
         Resume[] actual = storage.getAll();
         assertEquals(3, actual.length);
-        Resume[] expected = {r1, r2, r3};
+        Resume[] expected = {RESUME_1, RESUME_2, RESUME_3};
         assertArrayEquals(expected, actual);
     }
 
