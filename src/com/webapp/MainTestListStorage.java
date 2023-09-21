@@ -3,11 +3,11 @@ package com.webapp;
 import com.webapp.exception.ExistStorageException;
 import com.webapp.exception.NotExistStorageException;
 import com.webapp.model.Resume;
-import com.webapp.storage.ListStorage;
+import com.webapp.storage.MapStorage;
 import com.webapp.storage.Storage;
 
 public class MainTestListStorage {
-    static final Storage LIST_STORAGE = new ListStorage();
+    static final Storage LIST_STORAGE = new MapStorage();
 
     public static void main(String[] args) throws ExistStorageException, NotExistStorageException {
         Resume r1 = new Resume("uuid0");

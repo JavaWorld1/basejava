@@ -7,7 +7,7 @@ import com.webapp.storage.ArrayStorage;
 import com.webapp.storage.Storage;
 
 /**
- * Test for your com.webapp.storage.SortedArrayStorage implementation
+ * Test for your com.webapp.storage.ArrayStorage implementation
  */
 public class MainTestArrayStorage {
     static final Storage ARRAY_STORAGE = new ArrayStorage();

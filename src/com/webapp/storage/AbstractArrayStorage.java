@@ -1,6 +1,5 @@
 package com.webapp.storage;
 
-import com.webapp.exception.ExistStorageException;
 import com.webapp.exception.NotExistStorageException;
 import com.webapp.exception.StorageException;
 import com.webapp.model.Resume;
@@ -14,11 +13,11 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     public int size = 0;
 
     @Override
-    public void updateOperation(Resume resume, Integer index) {
-        if (index < 0) {
+    public void doUpdate(Resume resume, Object searchKey) {
+        if ((Integer) searchKey < 0) {
             throw new NotExistStorageException(resume.getUuid());
         } else {
-            storage[index] = resume;
+            storage[(Integer) searchKey] = resume;
         }
     }
 
@@ -28,35 +27,25 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void saveOperation(Resume resume, Integer index) {
-        if (size >= storage.length) {
+    public void doSave(Resume resume, Object searchKey) {
+        if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
-        } else if (index >= 0) {
-            throw new ExistStorageException(resume.getUuid());
         } else {
-            saveByIndex(resume, index);
+            saveByIndex(resume, (Integer) searchKey);
             size++;
         }
     }
 
     @Override
-    public void deleteOperation(Integer index, String uuid) {
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            deleteByIndex(index);
-            storage[size - 1] = null;
-            size--;
-        }
+    public void doDelete(Object searchKey) {
+        deleteByIndex((Integer) searchKey);
+        storage[size - 1] = null;
+        size--;
     }
 
     @Override
-    public Resume getOperation(Integer index, String uuid) {
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage[index];
-        }
+    public Resume doGet(Object searchKey) {
+        return storage[(Integer) searchKey];
     }
 
     public Resume[] getAll() {
@@ -67,7 +56,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return size;
     }
 
-    protected abstract Integer getIndex(String uuid);
+    @Override
+    protected boolean isExist(Object searchKey) {
+        return (Integer) searchKey >= 0;
+    }
+
+    protected abstract Integer searchKey(String uuid);
 
     protected abstract void saveByIndex(Resume resume, Integer index);
 
