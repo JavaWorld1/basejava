@@ -5,19 +5,25 @@ import com.webapp.exception.StorageException;
 import com.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
 
     public Resume[] storage = new Resume[STORAGE_LIMIT];
     public int size = 0;
 
     @Override
-    public void doUpdate(Resume resume, Object searchKey) {
-        if ((Integer) searchKey < 0) {
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
+    }
+
+    @Override
+    public void doUpdate(Resume resume, Integer searchKey) {
+        if (searchKey < 0) {
             throw new NotExistStorageException(resume.getUuid());
         } else {
-            storage[(Integer) searchKey] = resume;
+            storage[searchKey] = resume;
         }
     }
 
@@ -27,29 +33,25 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void doSave(Resume resume, Object searchKey) {
+    public void doSave(Resume resume, Integer searchKey) {
         if (size >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            saveByIndex(resume, (Integer) searchKey);
+            saveByIndex(resume, searchKey); // в array searchKey для save не нужен, он нужен для sortedArray
             size++;
         }
     }
 
     @Override
-    public void doDelete(Object searchKey) {
-        deleteByIndex((Integer) searchKey);
+    public void doDelete(Integer searchKey) {
+        deleteByIndex(searchKey);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    public Resume doGet(Object searchKey) {
-        return storage[(Integer) searchKey];
-    }
-
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    public Resume doGet(Integer searchKey) {
+        return storage[searchKey];
     }
 
     public int size() {
@@ -57,11 +59,12 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return (Integer) searchKey >= 0;
+    protected boolean isExist(Integer searchKey) {
+        return searchKey >= 0;
     }
 
-    protected abstract Integer searchKey(String uuid);
+    @Override
+    protected abstract Integer getSearchKey(String uuid);
 
     protected abstract void saveByIndex(Resume resume, Integer index);
 

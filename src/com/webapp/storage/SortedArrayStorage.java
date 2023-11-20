@@ -3,14 +3,17 @@ package com.webapp.storage;
 import com.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
 
+    private static final Comparator<Resume> RESUME_COMPARATOR = (o1, o2) -> o1.getUuid().compareTo(o2.getUuid());
+
     @Override
-    protected Integer searchKey(String uuid) {
-        Resume searchKey = new Resume(uuid);
-        return Arrays.binarySearch(storage, 0, size, searchKey);
-    }
+    protected Integer getSearchKey(String uuid) { // ищет резюме с данным uuid в хранилище и возвращает его индекс
+        Resume searchKey = new Resume(uuid, "dummy"); // fullname - заглушка
+        return Arrays.binarySearch(storage, 0, size, searchKey, RESUME_COMPARATOR);
+    } // двоичный поиск возвращает предполагаемый индекс для вставки, если указанное резюме не найдено
 
     @Override
     protected void deleteByIndex(Integer index) {

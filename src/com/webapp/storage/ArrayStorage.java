@@ -4,7 +4,7 @@ import com.webapp.model.Resume;
 
 public class ArrayStorage extends AbstractArrayStorage {
     @Override
-    protected Integer searchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) { // ищет по хранилищу индекс указанного резюме
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
@@ -19,7 +19,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void saveByIndex(Resume resume, Integer index) {
+    protected void saveByIndex(Resume resume, Integer index) { //
         storage[size] = resume;
     }
 }

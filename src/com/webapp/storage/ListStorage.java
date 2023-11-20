@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     public List<Resume> listStorage = new ArrayList<>();
 
     @Override
-    protected Integer searchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         ListIterator<Resume> listIterator = listStorage.listIterator();
         while (listIterator.hasNext()) {
             Integer index = listIterator.nextIndex();
@@ -24,13 +24,13 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
+    protected boolean isExist(Integer searchKey) {
         return searchKey != null;
     }
 
     @Override
-    public void doUpdate(Resume resume, Object searchKey) {
-        listStorage.set((Integer) searchKey, resume);
+    public void doUpdate(Resume resume, Integer searchKey) {
+        listStorage.set(searchKey, resume);
     }
 
     public void clear() {
@@ -38,22 +38,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void doSave(Resume resume, Object searchKey) {
+    public void doSave(Resume resume, Integer searchKey) {
         listStorage.add(resume);
     }
 
     @Override
-    public void doDelete(Object searchKey) {
+    public void doDelete(Integer searchKey) {
         listStorage.remove((int) searchKey);
     }
 
     @Override
-    public final Resume doGet(Object searchKey) {
-        return listStorage.get((Integer) searchKey);
+    public final Resume doGet(Integer searchKey) {
+        return listStorage.get(searchKey);
     }
 
-    public Resume[] getAll() {
-        return listStorage.toArray(new Resume[0]);
+    @Override
+    public List<Resume> doCopyAll() {
+        return new ArrayList<>(listStorage); // возвращаем копию листа
     }
 
     @Override
